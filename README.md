@@ -10,3 +10,4 @@ El ejemplo esta sacado del tutorial de flask http://flask.pocoo.org/docs/1.0/tut
 
 
 Se agregaron algunas modificaciones para utilizar mysql y memcached
+

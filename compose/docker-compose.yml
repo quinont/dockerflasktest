@@ -1,0 +1,45 @@
+version: '3'
+services:
+  web:
+    restart: always
+    image: quinont/dockerflasktest:1.0
+    environment:
+      FLASK_APP: "flaskr"
+      FLASK_DEBUG: "true"
+      DATABASE_HOST: "mysql"
+      DATABASE_USER: "root"
+      DATABASE_PASS: "algunstringcopado"
+      DATABASE_DB: "flask"
+      MEMCACHED_HOST: "memcached"
+      MEMCACHED_PORT: "11211"
+    links:
+      - mysql:mysql
+      - memcached:memcached
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=flask"
+      - "traefik.port=5000"
+      - "traefik.frontend.rule=Host:test.docker.local"
+    depends_on:
+      - mysql
+      - memcached
+      - traefik
+  traefik:
+    image: traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.toml:/etc/traefik/traefik.toml:ro
+    ports:
+      - "80:80"
+      - "8080:8080"
+  memcached:
+    image: memcached
+  mysql:
+    image: mariadb:5.5
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "algunstringcopado"
+      MYSQL_DATABASE: "flask"
+volumes:
+  db_data:
